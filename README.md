@@ -1,2 +1,6 @@
 # AntiColonisingGame2000
-MDS Year-2026 Sem-1 Research Artefact Project
+School Year: MDS Year-2026 Sem-1
+
+Class: GDV210 - People and Games
+
+Project: Research Artefact
