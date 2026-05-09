@@ -7,8 +7,9 @@ public partial class Game : Node2D
 	[Export] public int MapWidth = 12;
 	[Export] public int MapHeight = 8;
 
-	// Reference to the TileMapLayer
+	// External References
 	[Export] public TileMapLayer Map;
+	[Export] public Spirit Sp;
 
 	// Tile IDs
 	public enum TileType
@@ -22,14 +23,26 @@ public partial class Game : Node2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		// Check if Map Reference is Set
 		if (this.Map == null)
 		{
 			GD.PushWarning("TileMapLayer reference is not set. Please assign it in the inspector.");
-		} else
+		} 
+		else
 		{
-			GD.Print("TileMapLayer reference is set successfully.");
-			GD.Print("Game Ready. Map size: " + MapWidth + "x" + MapHeight);
+			GD.Print("Map reference is set successfully.");
 		}
+		
+		if (this.Sp == null)
+		{
+			GD.PushWarning("Spirit reference is not set. Please assign it in the inspector.");
+		}
+		else
+		{
+			GD.Print("Spirit reference is set successfully.");
+		}
+
+		GD.Print("Game Ready. Map size: " + MapWidth + "x" + MapHeight);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -49,15 +62,25 @@ public partial class Game : Node2D
 				// Pressed
 				if (mouseEvent.Pressed)
 				{
+					// Ensure both a TileMapLayer Reference and a Spirit Reference Exists
+					if (this.Map == null || this.Sp == null) return;
+
 					// Mouse Position in Map Coordinates
 					Vector2I mapCoords = Map.LocalToMap(Map.GetGlobalMousePosition());
 
 					// Check if the clicked coordinates are within the map bounds
 					if (mapCoords.X < 0 || mapCoords.X >= MapWidth || mapCoords.Y < 0 || mapCoords.Y >= MapHeight) return;
 
-					// Example: Get the tile type at the clicked coordinates
-					TileType clickedTileType = this.GetTileAtMapCoord(mapCoords);
-					GD.Print("Clicked Tile Type: " + clickedTileType);
+					// Example: Clicked on a Tile with a Spirit on it
+					if (this.Sp.GetSpiritMapPosition() == mapCoords)
+					{
+						GD.Print("Clicked on the Spirit's current tile at: " + mapCoords);
+					} 
+					else
+					{
+						// Move the Spirit to the clicked Tile
+						this.Sp.SetSpiritMapPosition(Map.GetGlobalMousePosition());
+					}
 				}
 			}
 		}
@@ -75,13 +98,13 @@ public partial class Game : Node2D
 	public TileType GetTileAtMapCoord(Vector2I mapCoords)
 	{
 		// Ensure a TileMapLayer Reference Exists
-		if (Map == null) return TileType.Healthy;
+		if (this.Map == null) return TileType.Healthy;
 
 		// Clamped Map Coordindates
 		Vector2I coords = this.ClampToMapBounds(mapCoords);
 
 		// Getting the Tile ID at the given coordinates
-		int sourceID = Map.GetCellSourceId(coords);
+		int sourceID = this.Map.GetCellSourceId(coords);
 		GD.Print("Source ID at " + coords + ": " + sourceID);
 
 		// Return the Tile Type based on the Source ID
@@ -105,13 +128,13 @@ public partial class Game : Node2D
 	public void SetTileAtMapCoord(Vector2I mapCoords, TileType tileType)
 	{
 		// Ensure a TileMapLayer Reference Exists
-		if (Map == null) return;
+		if (this.Map == null) return;
 
 		// Clamped Map Coordindates
 		Vector2I coords = this.ClampToMapBounds(mapCoords);
 
 		// Setting the Tile
-		Map.EraseCell(coords); // Clears the Tile
-		Map.SetCell(coords, (int)tileType, Vector2I.Zero, 0); // Set the Tile
+		this.Map.EraseCell(coords); // Clears the Tile
+		this.Map.SetCell(coords, (int)tileType, Vector2I.Zero, 0); // Set the Tile
 	}
 }
