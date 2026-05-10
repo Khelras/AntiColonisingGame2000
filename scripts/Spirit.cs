@@ -4,7 +4,7 @@ using System;
 public partial class Spirit : Sprite2D
 {
     // Spirit Properties
-    private Vector2I MapPos;
+    public Vector2I MapPos { get; private set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -15,12 +15,6 @@ public partial class Spirit : Sprite2D
 	public override void _Process(double delta)
 	{
 	}
-
-    // Getter for Spirit's Map Position
-    public Vector2I GetSpiritMapPosition()
-	{
-		return this.MapPos;
-    }
 
     // Setter for Spirit's Map Position given a World Position
     public void SetSpiritMapPosition(Vector2 worldPos)

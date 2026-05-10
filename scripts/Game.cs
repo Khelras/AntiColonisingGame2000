@@ -175,7 +175,7 @@ public partial class Game : Node2D
 		foreach (Spirit spirit in this._spirits)
 		{
             // Check if this Spirit is at the given coordinates
-            if (spirit.GetSpiritMapPosition() == coords)
+            if (spirit.MapPos == coords)
 			{
                 // Spirit found at the given coordinates
                 return spirit;
