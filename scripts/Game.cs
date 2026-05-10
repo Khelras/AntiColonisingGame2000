@@ -10,7 +10,11 @@ public partial class Game : Node2D
 
 	// References
 	[Export] public TileMapLayer Map;
+	[Export] public Camera2D Camera;
 	[Export] public Node SpiritsRoot;
+	[Export] public Control ActionPopUp;
+	[Export] public Button MoveButton;
+	[Export] public Button HealButton;
 
 	// Spirits
 	private readonly List<Spirit> _spirits = new List<Spirit>();
@@ -25,8 +29,24 @@ public partial class Game : Node2D
 		Outpost = 3
 	}
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+	// Player State
+	public enum PlayerState
+	{
+		Idle,
+		SpiritSelected,
+		MovingSpirit,
+    }
+
+    // Turn State
+    public enum  TurnState
+    {
+        Player,
+		Enemy,
+		Evaluate
+    }
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
 		// Check if Map Reference is Set
 		if (this.Map == null)
@@ -49,9 +69,9 @@ public partial class Game : Node2D
 				{
 					// Add the Spirit to the List of Spirits
 					GD.Print("Found Spirit: " + spirit.Name);
-					
+					spirit.SetSpiritMapPosition(spirit.GlobalPosition);
                     this._spirits.Add(spirit);
-									}
+				}
                 // If the child is not of type Spirit, log a warning
                 else
                 {
@@ -62,6 +82,37 @@ public partial class Game : Node2D
 		else
 		{
 			GD.PushWarning("SpiritsRoot reference is not set. Please assign it in the inspector.");
+		}
+
+        // Check if ActionPopUp Reference is Set
+        if (this.ActionPopUp == null)
+        {
+            GD.PushWarning("ActionPopUp reference is not set. Please assign it in the inspector.");
+        }
+		else
+		{
+			GD.Print("ActionPopUp reference is set successfully.");
+			this.ActionPopUp.Visible = false; // Hide the Action Pop-Up at the start of the Game
+        }
+
+        // Check if MoveButton Reference is Set
+        if (this.MoveButton == null)
+        {
+            GD.PushWarning("MoveButton reference is not set. Please assign it in the inspector.");
+        }
+		else
+		{
+			GD.Print("MoveButton reference is set successfully.");
+        }
+
+        // Check if HealButton Reference is Set
+        if (this.HealButton == null)
+        {
+            GD.PushWarning("HealButton reference is not set. Please assign it in the inspector.");
+        }
+		else
+		{
+			GD.Print("HealButton reference is set successfully.");
 		}
 
         // Game is Ready, print the Map Size for debugging purposes
@@ -99,11 +150,16 @@ public partial class Game : Node2D
 					{
 						GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
 						// You can add logic here to select the Spirit, show info, etc.
+						this.ShowPopup(spirit);
 					}
 					else
 					{
 						GD.Print("Clicked on an empty tile at: " + mapCoords);
 						// You can add logic here to place a new Spirit, change the tile, etc.
+						if (this.MoveButton.IsHovered() == false && this.HealButton.IsHovered() == false)
+						{
+                            this.HidePopup();
+                        }
 					}
 				}
 			}
@@ -185,4 +241,34 @@ public partial class Game : Node2D
 		// Otherwise, No Spirit found at the given coordinates
 		return null;
 	}
+
+    // Private Helper: Show the Action Pop-Up from a selected Spirit
+	private void ShowPopup(Spirit spirit)
+	{
+		// Ensure there is an Action Pop-Up Reference
+		if (spirit == null) return;
+
+        // Select Spirit
+        this._selectedSpirit = spirit;
+
+		// Position the Action Pop-Up under the selected Spirit
+		Vector2 spiritCameraPosition = this.Camera.GetCanvasTransform() * (spirit.GlobalPosition + spirit.GetRect().GetCenter()); // Convert the Spirit's Global Position to Camera's Local Space
+        Vector2 actionPopUpPosition = spiritCameraPosition + new Vector2(-this.ActionPopUp.GetRect().Size.X / 2, 30.0f);
+
+        // Move and Show the Action Pop-Up
+        this.ActionPopUp.GlobalPosition = actionPopUpPosition;
+		this.ActionPopUp.Visible = true;
+
+        GD.Print("Showing Action Pop-Up for '" + spirit.Name + "' at position: " + this.ActionPopUp.GlobalPosition);
+    }
+
+    // Private Helper: Hide the Action Pop-Up
+    private void HidePopup()
+	{
+        // Hide the Action Pop-Up
+        if (this.ActionPopUp != null) this.ActionPopUp.Visible = false;
+
+        // Deselect the Spirit;
+        this._selectedSpirit = null;
+    }
 }
