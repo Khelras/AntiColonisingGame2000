@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Game : Node2D
 {
@@ -7,12 +8,16 @@ public partial class Game : Node2D
 	[Export] public int MapWidth = 12;
 	[Export] public int MapHeight = 8;
 
-	// External References
+	// References
 	[Export] public TileMapLayer Map;
-	[Export] public Spirit Sp;
+	[Export] public Node SpiritsRoot;
 
-	// Tile IDs
-	public enum TileType
+	// Spirits
+	private readonly List<Spirit> _spirits = new List<Spirit>();
+	private Spirit _selectedSpirit;
+
+    // Tile IDs
+    public enum TileType
 	{
 		Healthy = 0,
 		Damaged = 1,
@@ -32,23 +37,40 @@ public partial class Game : Node2D
 		{
 			GD.Print("Map reference is set successfully.");
 		}
-		
-		if (this.Sp == null)
+
+		// Collect all Spirit Children Nodes and add it to the List of Spirits
+		if (this.SpiritsRoot != null)
 		{
-			GD.PushWarning("Spirit reference is not set. Please assign it in the inspector.");
-		}
+            // Iterate through the children of SpiritsRoot and add any Spirit nodes to the List of Spirits
+            foreach (var child in this.SpiritsRoot.GetChildren())
+			{
+                // Check if the child is of type Spirit before adding it to the list
+                if (child is Spirit spirit)
+				{
+					// Add the Spirit to the List of Spirits
+					GD.Print("Found Spirit: " + spirit.Name);
+					
+                    this._spirits.Add(spirit);
+									}
+                // If the child is not of type Spirit, log a warning
+                else
+                {
+					GD.PushWarning("Child node '" + child.Name + "' is not of type Spirit and will be ignored.");
+				}
+            }
+        }
 		else
 		{
-			GD.Print("Spirit reference is set successfully.");
+			GD.PushWarning("SpiritsRoot reference is not set. Please assign it in the inspector.");
 		}
 
-		GD.Print("Game Ready. Map size: " + MapWidth + "x" + MapHeight);
+        // Game is Ready, print the Map Size for debugging purposes
+        GD.Print("Game Ready. Map size: " + MapWidth + "x" + MapHeight);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		
 	}
 
 	public override void _Input(InputEvent @event)
@@ -62,8 +84,8 @@ public partial class Game : Node2D
 				// Pressed
 				if (mouseEvent.Pressed)
 				{
-					// Ensure both a TileMapLayer Reference and a Spirit Reference Exists
-					if (this.Map == null || this.Sp == null) return;
+					// Ensure a TileMapLayer Reference Exists
+					if (this.Map == null) return;
 
 					// Mouse Position in Map Coordinates
 					Vector2I mapCoords = Map.LocalToMap(Map.GetGlobalMousePosition());
@@ -71,31 +93,33 @@ public partial class Game : Node2D
 					// Check if the clicked coordinates are within the map bounds
 					if (mapCoords.X < 0 || mapCoords.X >= MapWidth || mapCoords.Y < 0 || mapCoords.Y >= MapHeight) return;
 
-					// Example: Clicked on a Tile with a Spirit on it
-					if (this.Sp.GetSpiritMapPosition() == mapCoords)
+					// Example: Click on a Tile with a Spirit on it (Multiple Edition :O)
+					Spirit spirit = this.FindSpiritAtMapCoord(mapCoords);
+					if (spirit != null)
 					{
-						GD.Print("Clicked on the Spirit's current tile at: " + mapCoords);
-					} 
+						GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
+						// You can add logic here to select the Spirit, show info, etc.
+					}
 					else
 					{
-						// Move the Spirit to the clicked Tile
-						this.Sp.SetSpiritMapPosition(Map.GetGlobalMousePosition());
+						GD.Print("Clicked on an empty tile at: " + mapCoords);
+						// You can add logic here to place a new Spirit, change the tile, etc.
 					}
 				}
 			}
 		}
 	}
 
-	// Helper: Clamp a Map Coordinate to the Map Bounds
-	public Vector2I ClampToMapBounds(Vector2I mapCoords)
+    // Public Helper: Clamp a Map Coordinate to the Map Bounds
+    public Vector2I ClampToMapBounds(Vector2I mapCoords)
 	{
 		int clampedX = Godot.Mathf.Clamp(mapCoords.X, 0, MapWidth - 1);
 		int clampedY = Godot.Mathf.Clamp(mapCoords.Y, 0, MapHeight - 1);
 		return new Vector2I(clampedX, clampedY);
 	}
 
-	// Helper: Get the Tile Type at a given Map Coordinates
-	public TileType GetTileAtMapCoord(Vector2I mapCoords)
+    // Public Helper: Get the Tile Type at a given Map Coordinates
+    public TileType GetTileAtMapCoord(Vector2I mapCoords)
 	{
 		// Ensure a TileMapLayer Reference Exists
 		if (this.Map == null) return TileType.Healthy;
@@ -124,7 +148,7 @@ public partial class Game : Node2D
 		}
 	}
 
-	// Helper: Set a Tile at a given Map Cooridates
+	// Public Helper: Set a Tile at a given Map Cooridates
 	public void SetTileAtMapCoord(Vector2I mapCoords, TileType tileType)
 	{
 		// Ensure a TileMapLayer Reference Exists
@@ -136,5 +160,29 @@ public partial class Game : Node2D
 		// Setting the Tile
 		this.Map.EraseCell(coords); // Clears the Tile
 		this.Map.SetCell(coords, (int)tileType, Vector2I.Zero, 0); // Set the Tile
+	}
+
+    // Private Helper: Find the Spirit at a given Map Coordinates (if any)
+	private Spirit FindSpiritAtMapCoord(Vector2I mapCoords)
+	{
+		// Ensure a TileMapLayer Reference Exists
+		if (this.Map == null) return null;
+
+		// Clamped Map Coordindates
+		Vector2I coords = this.ClampToMapBounds(mapCoords);
+
+		// Iterate through all Spirits and check their Map Positions
+		foreach (Spirit spirit in this._spirits)
+		{
+            // Check if this Spirit is at the given coordinates
+            if (spirit.GetSpiritMapPosition() == coords)
+			{
+                // Spirit found at the given coordinates
+                return spirit;
+			}
+		}
+
+		// Otherwise, No Spirit found at the given coordinates
+		return null;
 	}
 }

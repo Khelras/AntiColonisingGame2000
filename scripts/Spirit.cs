@@ -3,14 +3,12 @@ using System;
 
 public partial class Spirit : Sprite2D
 {
-	// Spirit Properties
-	private Vector2I MapPos;
+    // Spirit Properties
+    private Vector2I MapPos;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
-		this.Position = Vector2.Zero; // Start at (0,0) in World Coordinates
-		this.MapPos = Vector2I.Zero; // Start at (0,0) in Map Coordinates
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -28,7 +26,7 @@ public partial class Spirit : Sprite2D
     public void SetSpiritMapPosition(Vector2 worldPos)
 	{
         // Get the Parent Game Node
-        Game game = GetParent<Game>();
+        Game game = GetParent().GetParent<Game>();
         Vector2I tileSize = game.Map.TileSet.TileSize; // Tile Size
 
         // Convert World Position to Map Position
@@ -45,7 +43,7 @@ public partial class Spirit : Sprite2D
     public void SetSpiritMapPosition(Vector2I tilePos)
     {
         // Get the Parent Game Node
-        Game game = GetParent<Game>();
+        Game game = GetParent().GetParent<Game>();
         Vector2I tileSize = game.Map.TileSet.TileSize; // Tile Size
 
         // Set the Spirit's Map Position
