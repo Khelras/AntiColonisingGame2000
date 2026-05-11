@@ -36,6 +36,9 @@ sources/1 = SubResource("TileSetAtlasSource_p57ef")
 sources/2 = SubResource("TileSetAtlasSource_u5sy4")
 sources/3 = SubResource("TileSetAtlasSource_gee14")
 
+[sub_resource type="LabelSettings" id="LabelSettings_400sg"]
+font_size = 20
+
 [node name="Game" type="Node2D" unique_id=1416617372 node_paths=PackedStringArray("Map", "Camera", "ActionPopUp")]
 script = ExtResource("1_kiw3p")
 Map = NodePath("Map")
@@ -50,11 +53,12 @@ tile_set = SubResource("TileSet_dinhu")
 zoom = Vector2(2, 2)
 script = ExtResource("6_mcffj")
 
-[node name="Spirits" type="Node" parent="." unique_id=1506044622 node_paths=PackedStringArray("GameManager", "MoveButton", "HealButton")]
+[node name="Spirits" type="Node" parent="." unique_id=1506044622 node_paths=PackedStringArray("GameManager", "MoveButton", "HealButton", "PlayerStateLabel")]
 script = ExtResource("7_400sg")
 GameManager = NodePath("..")
 MoveButton = NodePath("../UI/ActionPopUp/MoveButton")
 HealButton = NodePath("../UI/ActionPopUp/HealButton")
+PlayerStateLabel = NodePath("../UI/PlayerState")
 
 [node name="Spirit1" parent="Spirits" unique_id=215531616 instance=ExtResource("7_2rd6h")]
 
@@ -68,6 +72,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 110.0
 offset_bottom = 31.0
+metadata/_edit_use_anchors_ = true
 
 [node name="MoveButton" type="Button" parent="UI/ActionPopUp" unique_id=220664248]
 layout_mode = 0
@@ -75,6 +80,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Move
 "
+metadata/_edit_use_anchors_ = true
 
 [node name="HealButton" type="Button" parent="UI/ActionPopUp" unique_id=28326675]
 layout_mode = 0
@@ -82,6 +88,14 @@ offset_left = 59.0
 offset_right = 110.0
 offset_bottom = 31.0
 text = "Heal"
+metadata/_edit_use_anchors_ = true
+
+[node name="PlayerState" type="Label" parent="UI" unique_id=973473335]
+offset_left = 4.0
+offset_right = 177.0
+offset_bottom = 28.0
+text = "Player State Label"
+label_settings = SubResource("LabelSettings_400sg")
 
 [connection signal="pressed" from="UI/ActionPopUp/MoveButton" to="Spirits" method="OnMoveButtonPressed"]
 [connection signal="pressed" from="UI/ActionPopUp/HealButton" to="Spirits" method="OnHealButtonPressed"]
