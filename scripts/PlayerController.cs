@@ -126,6 +126,13 @@ public partial class PlayerController : Node
                 // Pressed
                 if (mouseEvent.Pressed) this.OnMouseLeftButtonPressed();
             }
+
+            // Right Mouse Button
+            if (mouseEvent.ButtonIndex == MouseButton.Right)
+            {
+                // Pressed
+                if (mouseEvent.Pressed) this.OnMouseRightButtonPressed();
+            }
         }
     }
 
@@ -137,6 +144,19 @@ public partial class PlayerController : Node
 
         // Call the current Player State function from the top of the Stack
         this._playerState.Peek().Invoke();
+    }
+
+    // Input: Mouse Right Button Pressed Function
+    private void OnMouseRightButtonPressed()
+    {
+        // Ensure a Game Reference Exists
+        if (this.GameManager == null) return;
+
+        // DEBUG: Print to the console that the Right Mouse Button was Pressed and the Player State is being Refreshed
+        GD.Print("Right mouse button pressed. Refreshing player state.");
+
+        // Refresh the Player State
+        this.RefreshPlayerState();
     }
 
     // Private Helper: Find the Spirit at a given Map Coordinates (if any)
