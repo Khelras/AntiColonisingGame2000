@@ -80,3 +80,6 @@ offset_left = 59.0
 offset_right = 110.0
 offset_bottom = 31.0
 text = "Heal"
+
+[connection signal="pressed" from="UI/ActionPopUp/MoveButton" to="." method="OnMoveButtonPressed"]
+[connection signal="pressed" from="UI/ActionPopUp/HealButton" to="." method="OnHealButtonPressed"]

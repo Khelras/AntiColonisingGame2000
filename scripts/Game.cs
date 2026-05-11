@@ -141,23 +141,28 @@ public partial class Game : Node2D
 					// Mouse Position in Map Coordinates
 					Vector2I mapCoords = Map.LocalToMap(Map.GetGlobalMousePosition());
 
-					// Check if the clicked coordinates are within the map bounds
+					// Check if the Map Coordinates of the Mouse are within the Map Bounds
 					if (mapCoords.X < 0 || mapCoords.X >= MapWidth || mapCoords.Y < 0 || mapCoords.Y >= MapHeight) return;
 
-					// Example: Click on a Tile with a Spirit on it (Multiple Edition :O)
+					// Check if the Tile has a Spirit on it
 					Spirit spirit = this.FindSpiritAtMapCoord(mapCoords);
 					if (spirit != null)
 					{
-						GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
-						// You can add logic here to select the Spirit, show info, etc.
-						this.ShowPopup(spirit);
+                        // DEBUG: Print the name of the Spirit and the Map Coordinates where it was clicked
+                        GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
+
+                        // Show the Action Pop-Up for the Spirit and select it
+                        this.ShowPopup(spirit);
 					}
-					else
-					{
-						GD.Print("Clicked on an empty tile at: " + mapCoords);
-						// You can add logic here to place a new Spirit, change the tile, etc.
-						if (this.MoveButton.IsHovered() == false && this.HealButton.IsHovered() == false)
+                    else
+                    {
+                        // Check if the Mouse is NOT hovering over the Action Pop-Up Buttons, therefore clicking on an empty Tile
+                        if (this.MoveButton.IsHovered() == false && this.HealButton.IsHovered() == false)
 						{
+                            // DEBUG: Print the Map Coordinates of the empty tile that was clicked
+                            GD.Print("Clicked on an empty tile at: " + mapCoords);
+
+							// Hide the Action Pop-Up
                             this.HidePopup();
                         }
 					}
@@ -248,11 +253,13 @@ public partial class Game : Node2D
 		// Ensure there is an Action Pop-Up Reference
 		if (spirit == null) return;
 
-        // Select Spirit
+        // Select the given Spirit
         this._selectedSpirit = spirit;
 
-		// Position the Action Pop-Up under the selected Spirit
-		Vector2 spiritCameraPosition = this.Camera.GetCanvasTransform() * (spirit.GlobalPosition + spirit.GetRect().GetCenter()); // Convert the Spirit's Global Position to Camera's Local Space
+        // Convert the Spirit's Global Position to Camera's Local Space
+        Vector2 spiritCameraPosition = this.Camera.GetCanvasTransform() * (spirit.GlobalPosition + spirit.GetRect().GetCenter());
+
+        // Position the Action Pop-Up under the selected Spirit
         Vector2 actionPopUpPosition = spiritCameraPosition + new Vector2(-this.ActionPopUp.GetRect().Size.X / 2, 30.0f);
 
         // Move and Show the Action Pop-Up
@@ -268,7 +275,37 @@ public partial class Game : Node2D
         // Hide the Action Pop-Up
         if (this.ActionPopUp != null) this.ActionPopUp.Visible = false;
 
-        // Deselect the Spirit;
+        // Deselect the Spirit
         this._selectedSpirit = null;
+    }
+
+    // Signal Handler: Called when the Move Button is Pressed
+    public void OnMoveButtonPressed()
+	{
+		if (this._selectedSpirit == null)
+		{
+			GD.PushWarning("No spirit selected. Cannot move.");
+			return;
+		}
+
+        // DEBUG: Print the name of the selected Spirit when the Move Button is pressed
+        GD.Print("Move button pressed for '" + this._selectedSpirit.Name + "'. Implement movement logic here.");
+
+        // TODO: Implement movement logic here (e.g., show valid move tiles, allow player to select a tile, etc.)
+    }
+
+    // Signal Handler: Called when the Heal Button is Pressed
+    public void OnHealButtonPressed()
+	{
+		if (this._selectedSpirit == null)
+		{
+			GD.PushWarning("No spirit selected. Cannot heal.");
+			return;
+		}
+
+        // DEBUG: Print the name of the selected Spirit when the Heal Button is pressed
+        GD.Print("Heal button pressed for '" + this._selectedSpirit.Name + "'. Implement healing logic here.");
+
+        // TODO: Implement healing logic here (e.g., heal the spirit, change the tile state, etc.)
     }
 }
