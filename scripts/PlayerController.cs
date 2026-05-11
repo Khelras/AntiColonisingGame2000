@@ -110,7 +110,7 @@ public partial class PlayerController : Node
         if (this.PlayerStateLabel != null)
         {
             // Update the Player State Label to show the current Player State
-            this.PlayerStateLabel.Text = "Player State: " + this._playerState.Peek().Method.Name;
+            this.PlayerStateLabel.Text = "Current Player State: " + this._playerState.Peek().Method.Name;
         }
     }
 
@@ -120,6 +120,14 @@ public partial class PlayerController : Node
         // Check for Mouse Button
         if (@event is InputEventMouseButton mouseEvent)
         {
+            // Only Proceed if it's currently the Player's Turn
+            if (this.GameManager.TurnStateOrder.Peek() != Game.TurnState.Player)
+            {
+                // DEBUG: Print a message saying that it is not the Player's Turn
+                GD.Print("It is not the Player's Turn.");
+                return;
+            }
+
             // Left Mouse Button
             if (mouseEvent.ButtonIndex == MouseButton.Left)
             {

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Game : Node2D
 {
@@ -11,6 +12,8 @@ public partial class Game : Node2D
 	[Export] public TileMapLayer Map;
 	[Export] public Camera2D Camera;
 	[Export] public Control ActionPopUp;
+	[Export] public Label TurnStateLabel;
+	[Export] public Label TurnsSurpassedLabel;
 
     // Tile IDs
     public enum TileType
@@ -28,6 +31,12 @@ public partial class Game : Node2D
 		Enemy,
 		Evaluate
     }
+
+	// Game Properties
+	public Queue<TurnState> TurnStateOrder;
+	public int TurnsSurpassed { get; private set; }
+    public const int TotalLandHealth = 100;
+	public int CurrentLandHealth { get; private set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -57,6 +66,38 @@ public partial class Game : Node2D
 			this.ActionPopUp.Visible = false; // Hide the Action Pop-Up at the start of the Game
         }
 
+        // Check if TurnStateLabel Reference is Set
+        if (this.TurnStateLabel == null)
+        {
+            // DEBUG: If the Turn State Label reference is not set, print a warning to the console
+            GD.PushWarning("TurnStateLabel reference is not set. Please assign it in the inspector.");
+        }
+        else
+        {
+            // DEBUG: Print the name of the Turn State Label to confirm the reference is set correctly
+            GD.Print("TurnStateLabel reference is set successfully.");
+        }
+
+        // Check if TurnsSurpassedLabel Reference is Set
+        if (this.TurnsSurpassedLabel == null)
+        {
+            // DEBUG: If the Turns Surpassed Label reference is not set, print a warning to the console
+            GD.PushWarning("TurnsSurpassedLabel reference is not set. Please assign it in the inspector.");
+        }
+        else
+        {
+            // DEBUG: Print the name of the Turns Surpassed Label to confirm the reference is set correctly
+            GD.Print("TurnsSurpassedLabel reference is set successfully.");
+        }
+
+        // Initialisation of Game Properties 
+        this.TurnStateOrder = new Queue<TurnState>();
+		this.TurnStateOrder.Enqueue(TurnState.Player);
+		this.TurnStateOrder.Enqueue(TurnState.Enemy);
+		this.TurnStateOrder.Enqueue(TurnState.Evaluate);
+		this.TurnsSurpassed = 0;
+        this.CurrentLandHealth = TotalLandHealth;
+
         // DEBUG: Game is Ready, print the Map Size for debugging purposes
         GD.Print("Game Ready. Map size: " + MapWidth + "x" + MapHeight);
 	}
@@ -64,7 +105,20 @@ public partial class Game : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-	}
+        // Ensure a TurnStateLabel Reference Exists
+        if (this.TurnStateLabel != null)
+        {
+            // Update the Player State Label to show the current Player State
+            this.TurnStateLabel.Text = "Current Turn State: " + this.TurnStateOrder.Peek().ToString();
+        }
+
+        // Ensure a TurnsSurpassedLabel Reference Exists
+        if (this.TurnsSurpassedLabel != null)
+        {
+            // Update the Player State Label to show the current Player State
+            this.TurnsSurpassedLabel.Text = "Turns Surpassed: " + this.TurnsSurpassed;
+        }
+    }
 
     // Public Helper: Clamp a Map Coordinate to the Map Bounds
     public Vector2I ClampToMapBounds(Vector2I mapCoords)
@@ -117,4 +171,18 @@ public partial class Game : Node2D
 		this.Map.EraseCell(coords); // Clears the Tile
 		this.Map.SetCell(coords, (int)tileType, Vector2I.Zero, 0); // Set the Tile
 	}
+
+	// Signal Handler: Callen when the End Turn Button is Pressed
+	public void OnEndTurnButtonPressed()
+	{
+		// Ensure it is currently the Player's Turn
+		if (this.TurnStateOrder.Peek() != TurnState.Player) return;
+
+		// DEBUG: Print the current Turn State before ending the turn
+		GD.Print("Ending Turn '" + this.TurnStateOrder.Peek() + "'.");
+
+		// End the Current Turn and Move to the Next Turn State
+		this.TurnStateOrder.Enqueue(this.TurnStateOrder.Dequeue());
+	}
+
 }

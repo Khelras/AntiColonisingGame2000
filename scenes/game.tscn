@@ -39,11 +39,19 @@ sources/3 = SubResource("TileSetAtlasSource_gee14")
 [sub_resource type="LabelSettings" id="LabelSettings_400sg"]
 font_size = 20
 
-[node name="Game" type="Node2D" unique_id=1416617372 node_paths=PackedStringArray("Map", "Camera", "ActionPopUp")]
+[sub_resource type="LabelSettings" id="LabelSettings_g4kob"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_qy1jj"]
+font_size = 20
+
+[node name="Game" type="Node2D" unique_id=1416617372 node_paths=PackedStringArray("Map", "Camera", "ActionPopUp", "TurnStateLabel", "TurnsSurpassedLabel")]
 script = ExtResource("1_kiw3p")
 Map = NodePath("Map")
 Camera = NodePath("Camera")
 ActionPopUp = NodePath("UI/ActionPopUp")
+TurnStateLabel = NodePath("UI/StateLabels/TurnState")
+TurnsSurpassedLabel = NodePath("UI/StateLabels/TurnsSurpassed")
 
 [node name="Map" type="TileMapLayer" parent="." unique_id=591902935]
 tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAALAAEAAAAAAAAAAAALAAIAAAAAAAAAAAALAAMAAAAAAAAAAAALAAQAAAAAAAAAAAALAAUAAAAAAAAAAAALAAYAAAAAAAAAAAALAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAADAAcAAAAAAAAAAAACAAcAAAAAAAAAAAABAAcAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAEAAAAAAAAAAAAEAAQAAAAAAAAAAAAEAAMAAAAAAAAAAAAEAAIAAAAAAAAAAAAEAAEAAAAAAAAAAAADAAEAAAAAAAAAAAACAAEAAgAAAAAAAAABAAEAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAABAAQAAAAAAAAAAAABAAUAAAAAAAAAAAACAAYAAAAAAAAAAAACAAUAAAAAAAAAAAACAAQAAAAAAAAAAAACAAMAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAADAAMAAAAAAAAAAAADAAQAAAAAAAAAAAADAAUAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAEAAUAAgAAAAAAAAAFAAUAAAAAAAAAAAAFAAQAAAAAAAAAAAAFAAMAAAAAAAAAAAAFAAIAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAGAAIAAAAAAAAAAAAGAAMAAAAAAAAAAAAGAAQAAAAAAAAAAAAGAAUAAAAAAAAAAAAGAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAHAAUAAAAAAAAAAAAHAAQAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAIAAgAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAIAAIAAAAAAAAAAAAIAAMAAAAAAAAAAAAIAAQAAAAAAAAAAAAIAAUAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAJAAUAAAAAAAAAAAAJAAQAAgAAAAAAAAAJAAMAAAAAAAAAAAAJAAIAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAIAAAAAAAAAAAAKAAMAAAAAAAAAAAAKAAQAAAAAAAAAAAAKAAUAAAAAAAAAAAAKAAYAAAAAAAAAAAABAAYAAwAAAAAAAAAKAAEAAwAAAAAAAAA=")
@@ -58,7 +66,7 @@ script = ExtResource("7_400sg")
 GameManager = NodePath("..")
 MoveButton = NodePath("../UI/ActionPopUp/MoveButton")
 HealButton = NodePath("../UI/ActionPopUp/HealButton")
-PlayerStateLabel = NodePath("../UI/PlayerState")
+PlayerStateLabel = NodePath("../UI/StateLabels/PlayerState")
 
 [node name="Spirit1" parent="Spirits" unique_id=215531616 instance=ExtResource("7_2rd6h")]
 
@@ -90,12 +98,53 @@ offset_bottom = 31.0
 text = "Heal"
 metadata/_edit_use_anchors_ = true
 
-[node name="PlayerState" type="Label" parent="UI" unique_id=973473335]
+[node name="StateLabels" type="Control" parent="UI" unique_id=461783340]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerState" type="Label" parent="UI/StateLabels" unique_id=973473335]
+layout_mode = 0
 offset_left = 4.0
 offset_right = 177.0
 offset_bottom = 28.0
 text = "Player State Label"
 label_settings = SubResource("LabelSettings_400sg")
 
+[node name="TurnState" type="Label" parent="UI/StateLabels" unique_id=987627212]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 29.0
+offset_right = 113.0
+offset_bottom = 57.0
+text = "Turn State Label"
+label_settings = SubResource("LabelSettings_g4kob")
+
+[node name="TurnsSurpassed" type="Label" parent="UI/StateLabels" unique_id=569694420]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 57.0
+offset_right = 223.0
+offset_bottom = 85.0
+text = "Turns Surpassed Label"
+label_settings = SubResource("LabelSettings_qy1jj")
+
+[node name="EndTurnButton" type="Button" parent="UI" unique_id=1993968024]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -48.5
+offset_top = -53.0
+offset_right = 29.5
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1.25, 1.25)
+text = "End Turn"
+
 [connection signal="pressed" from="UI/ActionPopUp/MoveButton" to="Spirits" method="OnMoveButtonPressed"]
 [connection signal="pressed" from="UI/ActionPopUp/HealButton" to="Spirits" method="OnHealButtonPressed"]
+[connection signal="pressed" from="UI/EndTurnButton" to="." method="OnEndTurnButtonPressed"]
