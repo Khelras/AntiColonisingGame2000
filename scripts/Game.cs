@@ -183,7 +183,6 @@ public partial class Game : Node2D
 
 		// Getting the Tile ID at the given coordinates
 		int sourceID = this.Map.GetCellSourceId(coords);
-		GD.Print("Source ID at " + coords + ": " + sourceID);
 
 		// Return the Tile Type based on the Source ID
 		switch (sourceID)
