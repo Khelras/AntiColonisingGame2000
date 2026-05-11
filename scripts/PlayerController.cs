@@ -349,6 +349,14 @@ public partial class PlayerController : Node
             Spirit spirit = this.FindSpiritAtMapCoord(mapCoords);
             if (spirit != null)
             {
+                // Check if that Spirit is Expended
+                if (spirit.IsExpended == true)
+                {
+                    // DEBUG: Print that the Spirit on the clicked Tile is Expended and cannot be Selected
+                    GD.Print("Clicked on '" + spirit.Name + "' at Map Position: " + mapCoords + ", but it is expended and cannot be selected.");
+                    return;
+                }
+
                 // DEBUG: Print the name of the Spirit and the Map Coordinates where it was clicked
                 GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
 
@@ -389,8 +397,22 @@ public partial class PlayerController : Node
         Spirit spirit = this.FindSpiritAtMapCoord(mapCoords);
         if (spirit != null)
         {
-            // DEBUG: Print saying cannot move the selected Spirit to the clicked tile because there is already a Spirit on it
-            GD.Print("Cannot move '" + this._selectedSpirit.Name + "' to Map Position: " + mapCoords + " as there is already a Spirit on that Tile.");
+            // Check if that Spirit is Expended
+            if (spirit.IsExpended == true)
+            {
+                // DEBUG: Print that the Spirit on the clicked Tile is Expended and cannot be Selected
+                GD.Print("Clicked on '" + spirit.Name + "' at Map Position: " + mapCoords + ", but it is expended and cannot be selected.");
+                return;
+            }
+
+            // DEBUG: Print the name of the Spirit and the Map Coordinates where it was clicked
+            GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
+
+            // Go back a (to SpiritSelected)
+            this._playerState.Pop();
+
+            // Show the Action Pop-Up for the Spirit and select it
+            this.ShowPopup(spirit);
         }
         // Otherwise, the Tile is empty
         else
@@ -401,8 +423,11 @@ public partial class PlayerController : Node
             // Move the selected Spirit to the new Map Coordinates
             this._selectedSpirit.SetSpiritMapPosition(mapCoords);
 
-            // Refresh the Player State
-            this.RefreshPlayerState();
+            // Go back a (to SpiritSelected)
+            this._playerState.Pop();
+
+            // Show the Action Pop-Up for the recently moved Spirit and select it
+            this.ShowPopup(this._selectedSpirit);
         }
     }
 }
