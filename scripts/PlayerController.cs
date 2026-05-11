@@ -255,7 +255,11 @@ public partial class PlayerController : Node
         // DEBUG: Print the name of the selected Spirit when the Heal Button is pressed
         GD.Print("Heal button pressed for '" + this._selectedSpirit.Name + "'. Implement healing logic here.");
 
-        // TODO: Implement healing logic here (e.g., heal the spirit, change the tile state, etc.)
+        // Use the Heal Function of the Selected Spirit
+        this._selectedSpirit.Heal();
+
+        // Refresh the Player State
+        this.RefreshPlayerState();
     }
 
     // Private Helper: Clear the Player State Stack and return to Idle State
@@ -290,6 +294,14 @@ public partial class PlayerController : Node
         Spirit spirit = this.FindSpiritAtMapCoord(mapCoords);
         if (spirit != null)
         {
+            // Check if that Spirit is Expended
+            if (spirit.IsExpended == true)
+            {
+                // DEBUG: Print that the Spirit on the clicked Tile is Expended and cannot be Selected
+                GD.Print("Clicked on '" + spirit.Name + "' at Map Position: " + mapCoords + ", but it is expended and cannot be selected.");
+                return;
+            }
+
             // DEBUG: Print the name of the Spirit and the Map Coordinates where it was clicked
             GD.Print("Clicked on a tile with '" + spirit.Name + "' at Map Position: " + mapCoords);
 

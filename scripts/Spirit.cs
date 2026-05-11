@@ -3,11 +3,16 @@ using System;
 
 public partial class Spirit : Sprite2D
 {
+    // Spirit Sprite References
+    static readonly CompressedTexture2D Normal = GD.Load<CompressedTexture2D>("res://assets/Spirit.png");
+    static readonly CompressedTexture2D Expended = GD.Load<CompressedTexture2D>("res://assets/SpiritHasHealed.png");
+
     // Reference to Player Controller
     PlayerController Player;
 
     // Spirit Properties
     public Vector2I MapPos { get; private set; }
+    public bool IsExpended { get; private set; } = false;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -48,5 +53,25 @@ public partial class Spirit : Sprite2D
         // Set the Spirit's Map Position
         this.MapPos = tilePos;
         this.Position = tilePos * tileSize;
+    }
+
+    // Public Helper: Reset the Spirit to its Normal State
+    public void ResetSpirit()
+    {
+        // Reset the Spirit's Texture to the Normal version
+        this.IsExpended = false;
+        this.Texture = Spirit.Normal; 
+    }
+
+    // Heal Function
+    public void Heal()
+    {
+        // Get the Game object from the Parent Player Controller
+        Game game = this.Player.GameManager;
+
+        // DEBUG: Print Spirit Healing
+        GD.Print("Spirit used Heal. All actions Expended.");
+        this.IsExpended = true; // Set the Spirit as Expended
+        this.Texture = Spirit.Expended; // Change the Spirit's Texture to the Expended version
     }
 }
