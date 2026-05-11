@@ -68,10 +68,19 @@ public partial class Spirit : Sprite2D
     {
         // Get the Game object from the Parent Player Controller
         Game game = this.Player.GameManager;
-
-        // DEBUG: Print Spirit Healing
-        GD.Print("Spirit used Heal. All actions Expended.");
-        this.IsExpended = true; // Set the Spirit as Expended
-        this.Texture = Spirit.Expended; // Change the Spirit's Texture to the Expended version
+        
+        // Check that the Spirit is on an Outpost Tile and Heal that Tile, destroying the Outpost.
+        if (game.GetTileAtMapCoord(this.MapPos) == Game.TileType.Outpost)
+        {
+            // DEBUG: Print Spirit Healing
+            GD.Print("Spirit used Heal and was successful. All actions Expended.");
+            this.IsExpended = true; // Set the Spirit as Expended
+            this.Texture = Spirit.Expended; // Change the Spirit's Texture to the Expended version
+        } 
+        else
+        {
+            // DEBUG: Print Invalid Heal Attempt
+            GD.Print("Spirit Heal failed. Not on an Outpost Tile.");
+        }
     }
 }
