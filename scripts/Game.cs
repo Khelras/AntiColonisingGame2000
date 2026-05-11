@@ -11,9 +11,11 @@ public partial class Game : Node2D
 	// References
 	[Export] public TileMapLayer Map;
 	[Export] public Camera2D Camera;
+	[Export] public AIController AI;
 	[Export] public Control ActionPopUp;
 	[Export] public Label TurnStateLabel;
 	[Export] public Label TurnsSurpassedLabel;
+	[Export] public Label LandHealthLabel;
 
     // Tile IDs
     public enum TileType
@@ -66,6 +68,18 @@ public partial class Game : Node2D
 			this.ActionPopUp.Visible = false; // Hide the Action Pop-Up at the start of the Game
         }
 
+        // Check if AI Reference is Set
+        if (this.AI == null)
+        {
+            // DEBUG: If the AI reference is not set, print a warning to the console
+            GD.PushWarning("AI reference is not set. Please assign it in the inspector.");
+        }
+        else
+        {
+            // DEBUG: Print the name of the AI to confirm the reference is set correctly
+            GD.Print("AI reference is set successfully.");
+        }
+
         // Check if TurnStateLabel Reference is Set
         if (this.TurnStateLabel == null)
         {
@@ -88,6 +102,18 @@ public partial class Game : Node2D
         {
             // DEBUG: Print the name of the Turns Surpassed Label to confirm the reference is set correctly
             GD.Print("TurnsSurpassedLabel reference is set successfully.");
+        }
+
+        // Check if LandHealthLabel Reference is Set
+        if (this.LandHealthLabel == null)
+        {
+            // DEBUG: If the Land Health Label reference is not set, print a warning to the console
+            GD.PushWarning("LandHealthLabel reference is not set. Please assign it in the inspector.");
+        }
+        else
+        {
+            // DEBUG: Print the name of the Land Health Label to confirm the reference is set correctly
+            GD.Print("LandHealthLabel reference is set successfully.");
         }
 
         // Initialisation of Game Properties 
@@ -117,6 +143,13 @@ public partial class Game : Node2D
         {
             // Update the Player State Label to show the current Player State
             this.TurnsSurpassedLabel.Text = "Turns Surpassed: " + this.TurnsSurpassed;
+        }
+
+        // Ensure a LandHealthLabel Reference Exists
+        if (this.LandHealthLabel != null)
+        {
+            // Update the Land Health Label to show the current Land Health
+            this.LandHealthLabel.Text = "Land Health: " + this.CurrentLandHealth + "/" + Game.TotalLandHealth;
         }
     }
 
@@ -183,6 +216,21 @@ public partial class Game : Node2D
 
 		// End the Current Turn and Move to the Next Turn State
 		this.TurnStateOrder.Enqueue(this.TurnStateOrder.Dequeue());
+
+        // Start Enemy Turn
+        this.EnemyTurn();
 	}
 
+    // Turn State: Enemy Turn Function
+    private void EnemyTurn()
+    {
+        // Start the Enemy Turn via the AI Controller
+        this.AI.StartEnemyTurn();
+    }
+
+    // Turn State: Evaluate Function
+    private void EvaluateTurn()
+    {
+        // TODO: Evaluate at the End of the Turn order
+    }
 }

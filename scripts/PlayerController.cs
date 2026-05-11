@@ -120,26 +120,40 @@ public partial class PlayerController : Node
         // Check for Mouse Button
         if (@event is InputEventMouseButton mouseEvent)
         {
-            // Only Proceed if it's currently the Player's Turn
-            if (this.GameManager.TurnStateOrder.Peek() != Game.TurnState.Player)
-            {
-                // DEBUG: Print a message saying that it is not the Player's Turn
-                GD.Print("It is not the Player's Turn.");
-                return;
-            }
-
             // Left Mouse Button
             if (mouseEvent.ButtonIndex == MouseButton.Left)
             {
                 // Pressed
-                if (mouseEvent.Pressed) this.OnMouseLeftButtonPressed();
+                if (mouseEvent.Pressed)
+                {
+                    // Only Proceed if it's currently the Player's Turn
+                    if (this.GameManager.TurnStateOrder.Peek() != Game.TurnState.Player)
+                    {
+                        // DEBUG: Print a message saying that it is not the Player's Turn
+                        GD.Print("It is not the Player's Turn.");
+                        return;
+                    }
+
+                    this.OnMouseLeftButtonPressed();
+                }
             }
 
             // Right Mouse Button
             if (mouseEvent.ButtonIndex == MouseButton.Right)
             {
                 // Pressed
-                if (mouseEvent.Pressed) this.OnMouseRightButtonPressed();
+                if (mouseEvent.Pressed)
+                {
+                    // Only Proceed if it's currently the Player's Turn
+                    if (this.GameManager.TurnStateOrder.Peek() != Game.TurnState.Player)
+                    {
+                        // DEBUG: Print a message saying that it is not the Player's Turn
+                        GD.Print("It is not the Player's Turn.");
+                        return;
+                    }
+
+                    this.OnMouseRightButtonPressed();
+                }
             }
         }
     }
