@@ -72,6 +72,7 @@ public partial class AIController : Node
         // Do-While Loop to Generate Random Map Coordinates until a Suitable Tile is found to place the Outpost
         bool condition = 
             this.GameManager.GetTileAtMapCoord(randomOutpostMapPos) == Game.TileType.Village ||
+            this.GameManager.GetTileAtMapCoord(randomOutpostMapPos) == Game.TileType.OutpostHalf ||
             this.GameManager.GetTileAtMapCoord(randomOutpostMapPos) == Game.TileType.Outpost;
         do {
             randomOutpostMapX = random.Next(0, this.GameManager.MapWidth);
@@ -80,7 +81,10 @@ public partial class AIController : Node
         } while (condition);
 
         // Place the Outpost at the Randomly Generated Coordinates
-        this.GameManager.SetTileAtMapCoord(randomOutpostMapPos, Game.TileType.Outpost);
+        this.GameManager.SetTileAtMapCoord(randomOutpostMapPos, Game.TileType.OutpostHalf);
+        
+        // Damage the Land
+        this.GameManager.DamageLand();
 
         // DEBUG: Print the current Turn State before ending the turn
         GD.Print("Ending Turn '" + this.GameManager.TurnStateOrder.Peek() + "'.");

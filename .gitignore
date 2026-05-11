@@ -18,3 +18,9 @@ mono_crash.*.json
 
 # VS-specific ignores
 .vs/
+
+# Rider-specific ignores
+.idea
+
+# MacOS ignores
+.DS_Store

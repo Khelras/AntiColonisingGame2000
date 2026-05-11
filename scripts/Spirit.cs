@@ -69,8 +69,9 @@ public partial class Spirit : Sprite2D
         // Get the Game object from the Parent Player Controller
         Game game = this.Player.GameManager;
         
-        // Check that the Spirit is on an Outpost Tile and Heal that Tile, destroying the Outpost.
-        if (game.GetTileAtMapCoord(this.MapPos) == Game.TileType.Outpost)
+        // Check that the Spirit is on an Outpost Tile or an OutpostHalf Tile and Heal that Tile, destroying the Outpost.
+        Game.TileType checkedTile = game.GetTileAtMapCoord(this.MapPos);
+        if (checkedTile == Game.TileType.Outpost || checkedTile == Game.TileType.OutpostHalf)
         {
             // DEBUG: Print Spirit Healing
             GD.Print("Spirit used Heal and was successful. All actions Expended.");

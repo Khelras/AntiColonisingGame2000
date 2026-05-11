@@ -23,7 +23,16 @@ public partial class Game : Node2D
 		Healthy = 0,
 		Damaged = 1,
 		Village = 2,
-		Outpost = 3
+		OutpostHalf = 3,
+		Outpost = 4
+	}
+    
+	// Game State
+	public enum GameState
+	{
+		Playing,
+		Win,
+		Lose
 	}
 
     // Turn State
@@ -35,6 +44,7 @@ public partial class Game : Node2D
     }
 
 	// Game Properties
+	public GameState CurrentGameState;
 	public Queue<TurnState> TurnStateOrder;
 	public int TurnsSurpassed { get; private set; }
     public const int TotalLandHealth = 100;
@@ -117,6 +127,7 @@ public partial class Game : Node2D
         }
 
         // Initialisation of Game Properties 
+        this.CurrentGameState = GameState.Playing;
         this.TurnStateOrder = new Queue<TurnState>();
 		this.TurnStateOrder.Enqueue(TurnState.Player);
 		this.TurnStateOrder.Enqueue(TurnState.Enemy);
@@ -183,7 +194,9 @@ public partial class Game : Node2D
 				return TileType.Damaged;
 			case 2: // Village Tile
 				return TileType.Village;
-			case 3: // Outpost Tile
+			case 3: // Outpost-Half Tile
+				return TileType.OutpostHalf;
+			case 4: // Outpost Tile
 				return TileType.Outpost;
 			default: // Unknown
 				GD.PushWarning("Unknown source ID: " + sourceID + " at coordinates: " + coords);
@@ -191,21 +204,45 @@ public partial class Game : Node2D
 		}
 	}
 
-	// Public Helper: Set a Tile at a given Map Cooridates
+	// Public Helper: Set a Tile at a given Map Coordinates
 	public void SetTileAtMapCoord(Vector2I mapCoords, TileType tileType)
 	{
 		// Ensure a TileMapLayer Reference Exists
 		if (this.Map == null) return;
 
-		// Clamped Map Coordindates
+		// Clamped Map Coordinates
 		Vector2I coords = this.ClampToMapBounds(mapCoords);
 
 		// Setting the Tile
 		this.Map.EraseCell(coords); // Clears the Tile
 		this.Map.SetCell(coords, (int)tileType, Vector2I.Zero, 0); // Set the Tile
 	}
+	
+	// Public Helper: Damage the Land
+	public void DamageLand()
+	{
+		// Damage the Land for 5
+		this.CurrentLandHealth -= 5;
+		
+		// Check if Land Health reached 0 or below
+		if (this.CurrentLandHealth <= 0)
+		{
+			// Clamp to 0
+			this.CurrentLandHealth = 0;
+			
+			// Game lost
+			this.CurrentGameState = GameState.Lose;
+		}
+	}
+	
+	// Public Helper: Heal the Land
+	public void HealLand()
+	{
+		// Heal the Land for 5
+		this.CurrentLandHealth += (this.CurrentLandHealth + 5 > 100) ? 100 : this.CurrentLandHealth + 5;
+	}
 
-	// Signal Handler: Callen when the End Turn Button is Pressed
+	// Signal Handler: Called when the End Turn Button is Pressed
 	public void OnEndTurnButtonPressed()
 	{
 		// Ensure it is currently the Player's Turn
@@ -232,5 +269,13 @@ public partial class Game : Node2D
     private void EvaluateTurn()
     {
         // TODO: Evaluate at the End of the Turn order
+        
+        // Step 1: Check for Spirits Healing the Land and removing Outposts
+        
+        // Step 2: Find all the fully-built Outposts and Evaluate their Damages
+        
+        // Step 3: Find all half-built Outposts and turn them into 
+        
+        // Step 4: Evaluate the Win-Lost Condition or Proceed to the next Round of Turns
     }
 }
