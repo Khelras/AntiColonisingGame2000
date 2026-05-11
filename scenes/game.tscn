@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://pkvg2khpvb1a" path="res://assets/Outpost.png" id="5_3xj3m"]
 [ext_resource type="Script" uid="uid://ds1g4lnakkikd" path="res://scripts/Camera.cs" id="6_mcffj"]
 [ext_resource type="PackedScene" uid="uid://og4pkaagxfuy" path="res://scenes/Spirit.tscn" id="7_2rd6h"]
+[ext_resource type="Script" uid="uid://dp8mun4w6rdr3" path="res://scripts/PlayerController.cs" id="7_400sg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iywne"]
 texture = ExtResource("2_400sg")
@@ -35,14 +36,11 @@ sources/1 = SubResource("TileSetAtlasSource_p57ef")
 sources/2 = SubResource("TileSetAtlasSource_u5sy4")
 sources/3 = SubResource("TileSetAtlasSource_gee14")
 
-[node name="Game" type="Node2D" unique_id=1416617372 node_paths=PackedStringArray("Map", "Camera", "SpiritsRoot", "ActionPopUp", "MoveButton", "HealButton")]
+[node name="Game" type="Node2D" unique_id=1416617372 node_paths=PackedStringArray("Map", "Camera", "ActionPopUp")]
 script = ExtResource("1_kiw3p")
 Map = NodePath("Map")
 Camera = NodePath("Camera")
-SpiritsRoot = NodePath("Spirits")
 ActionPopUp = NodePath("UI/ActionPopUp")
-MoveButton = NodePath("UI/ActionPopUp/MoveButton")
-HealButton = NodePath("UI/ActionPopUp/HealButton")
 
 [node name="Map" type="TileMapLayer" parent="." unique_id=591902935]
 tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAALAAEAAAAAAAAAAAALAAIAAAAAAAAAAAALAAMAAAAAAAAAAAALAAQAAAAAAAAAAAALAAUAAAAAAAAAAAALAAYAAAAAAAAAAAALAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAADAAcAAAAAAAAAAAACAAcAAAAAAAAAAAABAAcAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAEAAAAAAAAAAAAEAAQAAAAAAAAAAAAEAAMAAAAAAAAAAAAEAAIAAAAAAAAAAAAEAAEAAAAAAAAAAAADAAEAAAAAAAAAAAACAAEAAgAAAAAAAAABAAEAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAABAAQAAAAAAAAAAAABAAUAAAAAAAAAAAACAAYAAAAAAAAAAAACAAUAAAAAAAAAAAACAAQAAAAAAAAAAAACAAMAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAADAAMAAAAAAAAAAAADAAQAAAAAAAAAAAADAAUAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAEAAUAAgAAAAAAAAAFAAUAAAAAAAAAAAAFAAQAAAAAAAAAAAAFAAMAAAAAAAAAAAAFAAIAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAGAAIAAAAAAAAAAAAGAAMAAAAAAAAAAAAGAAQAAAAAAAAAAAAGAAUAAAAAAAAAAAAGAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAHAAUAAAAAAAAAAAAHAAQAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAIAAgAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAIAAIAAAAAAAAAAAAIAAMAAAAAAAAAAAAIAAQAAAAAAAAAAAAIAAUAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAJAAUAAAAAAAAAAAAJAAQAAgAAAAAAAAAJAAMAAAAAAAAAAAAJAAIAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAIAAAAAAAAAAAAKAAMAAAAAAAAAAAAKAAQAAAAAAAAAAAAKAAUAAAAAAAAAAAAKAAYAAAAAAAAAAAABAAYAAwAAAAAAAAAKAAEAAwAAAAAAAAA=")
@@ -52,7 +50,11 @@ tile_set = SubResource("TileSet_dinhu")
 zoom = Vector2(2, 2)
 script = ExtResource("6_mcffj")
 
-[node name="Spirits" type="Node" parent="." unique_id=1506044622]
+[node name="Spirits" type="Node" parent="." unique_id=1506044622 node_paths=PackedStringArray("GameManager", "MoveButton", "HealButton")]
+script = ExtResource("7_400sg")
+GameManager = NodePath("..")
+MoveButton = NodePath("../UI/ActionPopUp/MoveButton")
+HealButton = NodePath("../UI/ActionPopUp/HealButton")
 
 [node name="Spirit1" parent="Spirits" unique_id=215531616 instance=ExtResource("7_2rd6h")]
 
@@ -81,5 +83,5 @@ offset_right = 110.0
 offset_bottom = 31.0
 text = "Heal"
 
-[connection signal="pressed" from="UI/ActionPopUp/MoveButton" to="." method="OnMoveButtonPressed"]
-[connection signal="pressed" from="UI/ActionPopUp/HealButton" to="." method="OnHealButtonPressed"]
+[connection signal="pressed" from="UI/ActionPopUp/MoveButton" to="Spirits" method="OnMoveButtonPressed"]
+[connection signal="pressed" from="UI/ActionPopUp/HealButton" to="Spirits" method="OnHealButtonPressed"]
