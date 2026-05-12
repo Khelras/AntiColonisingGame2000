@@ -28,8 +28,9 @@ public partial class Game : Node2D
 		Healthy = 0,
 		Damaged = 1,
 		Village = 2,
-		OutpostHalf = 3,
-		Outpost = 4
+		VillageDead = 3,
+		OutpostHalf = 4,
+		Outpost = 5
 	}
     
 	// Game State
@@ -220,9 +221,11 @@ public partial class Game : Node2D
 				return TileType.Damaged;
 			case 2: // Village Tile
 				return TileType.Village;
-			case 3: // Outpost-Half Tile
+			case 3: // Village Tile
+				return TileType.Village;
+			case 4: // Outpost-Half Tile
 				return TileType.OutpostHalf;
-			case 4: // Outpost Tile
+			case 5: // Outpost Tile
 				return TileType.Outpost;
 			default: // Unknown
 				GD.PushWarning("Unknown source ID: " + sourceID + " at coordinates: " + coords);
