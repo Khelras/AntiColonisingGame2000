@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://og4pkaagxfuy"]
-
-[ext_resource type="Texture2D" uid="uid://bhcdkokh3ym8l" path="res://assets/Spirit.png" id="1_aol8h"]
-[ext_resource type="Script" uid="uid://dhh1ckdmg0k5l" path="res://scripts/Spirit.cs" id="2_t0eny"]
-
-[node name="Spirit" type="Sprite2D" unique_id=215531616]
-texture = ExtResource("1_aol8h")
-offset = Vector2(16, 16)
-script = ExtResource("2_t0eny")
