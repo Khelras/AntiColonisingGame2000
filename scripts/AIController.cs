@@ -76,16 +76,17 @@ public partial class AIController : Node
             Vector2I randomOutpostMapPos = new Vector2I();
             
             // Do-While Loop to Generate Random Map Coordinates until a Suitable Tile is found to place the Outpost
-            bool condition = 
-                this.GameManager.GetTileAtMapCoord(randomOutpostMapPos) == Game.TileType.Village ||
-                this.GameManager.GetTileAtMapCoord(randomOutpostMapPos) == Game.TileType.OutpostHalf ||
-                this.GameManager.GetTileAtMapCoord(randomOutpostMapPos) == Game.TileType.Outpost;
+            Game.TileType checkedTile = this.GameManager.GetTileAtMapCoord(randomOutpostMapPos);
             do
             {
+                // Calculate a Random Position
                 randomOutpostMapX = random.Next(0, this.GameManager.MapWidth);
                 randomOutpostMapY = random.Next(0, this.GameManager.MapHeight);
                 randomOutpostMapPos = new Vector2I(randomOutpostMapX, randomOutpostMapY);
-            } while (condition);
+                
+                // Re-Check the Tile at the new Random Position
+                checkedTile = this.GameManager.GetTileAtMapCoord(randomOutpostMapPos);
+            } while (checkedTile != Game.TileType.Healthy && checkedTile != Game.TileType.Damaged);
             
             // DEBUG: Print the Map Position of the Randomly Placed Outpost
             GD.Print("Placing Outpost at Map Position: " + randomOutpostMapPos);

@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cchl8kp1a6tca"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_afbyi"]
+font_size = 150
+
+[node name="Win" type="Node2D" unique_id=1278636003]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1080858418]
+
+[node name="Label" type="Label" parent="." unique_id=1618716972]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -372.5
+offset_top = -102.5
+offset_right = 372.5
+offset_bottom = 102.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "YOU WIN!!"
+label_settings = SubResource("LabelSettings_afbyi")
+horizontal_alignment = 1
+vertical_alignment = 1

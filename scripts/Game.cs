@@ -416,7 +416,8 @@ public partial class Game : Node2D
 			    // DEBUG: Print a Message saying that a Win Condition has been met.
 			    GD.Print("A Win Condition has been met. Game Won. Proceeding to Win Screen.");
 			    
-			    // TODO: Go to Win Screen
+			    // Go to Win Screen
+			    this.GetTree().ChangeSceneToFile("res://scenes/win.tscn");
 		    } break;
 		    
 		    // Game Lost
@@ -425,7 +426,8 @@ public partial class Game : Node2D
 				// DEBUG: Print a Message saying that a Lose Condition has been met.   
 				GD.Print("A Lose Condition has been met. Game Lost. Proceeding to Lose Screen.");
 				
-				// TODO: Go to Lose Screen
+				// Go to Lose Screen
+				this.GetTree().ChangeSceneToFile("res://scenes/lose.tscn");
 		    } break;
 		    
 		    // Game still Ongoing
