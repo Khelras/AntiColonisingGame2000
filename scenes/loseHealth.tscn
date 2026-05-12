@@ -19,7 +19,8 @@ offset_right = 372.5
 offset_bottom = 102.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "YOU LOST :("
+text = "YOU LOST :(
+No More HP :0"
 label_settings = SubResource("LabelSettings_afbyi")
 horizontal_alignment = 1
 vertical_alignment = 1

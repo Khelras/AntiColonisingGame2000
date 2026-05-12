@@ -365,11 +365,42 @@ public partial class Game : Node2D
         // Loop through all the fully-built Outposts present
         foreach (Vector2I fullyBuiltOutpostsMapPos in this.FullyBuiltOutposts)
         {
-	        // Damage the Land
-	        this.DamageLand();
-	        
-	        // TODO: Update to Evaluate Villages as well
+			// Check if any Villages are near this Outpost
+			bool villageDestroyed = false;
+			for (int i = 0; i < this.Villages.Count; i++)
+			{
+				// Check if this Village is within a 2-Tile Radius of this Outpost
+				if (fullyBuiltOutpostsMapPos.DistanceTo(this.Villages[i]) <= 2)
+				{
+					// Destroy this Village
+					this.SetTileAtMapCoord(this.Villages[i], TileType.VillageDead);
+                    this.Villages.RemoveAt(i);
+                    break; // Break out of the Loop early
+				}
+			}
+
+			// Check if a Village was NOT Destroyed
+			if (villageDestroyed == false)
+			{
+                // Damage the Land instead
+                this.DamageLand();
+            }
         }
+
+		// Check if there are NO more Villages
+		if (this.Villages.Count <= 0)
+		{
+			// Game Lost
+			this.CurrentGameState = GameState.Lose;
+
+            // DEBUG: Print a Message saying that a Lose Condition has been met.   
+            GD.Print("A Lose Condition has been met. Game Lost. Proceeding to Lose Screen.");
+
+            // Go to Lose Screen
+            this.GetTree().ChangeSceneToFile("res://scenes/loseVillages.tscn");
+			return; // Don't Proceed Further
+        }
+
         // -- //
 
         // -- Step 3: Turn all half-built Outposts (from the HalfBuiltOutposts List) into fully-built Outposts -- //
@@ -430,7 +461,7 @@ public partial class Game : Node2D
 				GD.Print("A Lose Condition has been met. Game Lost. Proceeding to Lose Screen.");
 				
 				// Go to Lose Screen
-				this.GetTree().ChangeSceneToFile("res://scenes/lose.tscn");
+				this.GetTree().ChangeSceneToFile("res://scenes/loseHealth.tscn");
 		    } break;
 		    
 		    // Game still Ongoing
