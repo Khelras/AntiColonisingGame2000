@@ -11,7 +11,7 @@ public partial class PlayerController : Node
     [Export] public Label PlayerStateLabel;
 
     // Spirits
-    private readonly List<Spirit> _spirits = new List<Spirit>();
+    public readonly List<Spirit> Spirits = new List<Spirit>();
     private Spirit _selectedSpirit;
 
     // Player States
@@ -80,7 +80,7 @@ public partial class PlayerController : Node
 
                 // Add the Spirit to the List of Spirits
                 spirit.SetSpiritMapPosition(spirit.GlobalPosition);
-                this._spirits.Add(spirit);
+                this.Spirits.Add(spirit);
             }
             // If the child is not of type Spirit, log a warning
             else
@@ -191,7 +191,7 @@ public partial class PlayerController : Node
         Vector2I coords = this.GameManager.ClampToMapBounds(mapCoords);
 
         // Iterate through all Spirits and check their Map Positions
-        foreach (Spirit spirit in this._spirits)
+        foreach (Spirit spirit in this.Spirits)
         {
             // Check if this Spirit is at the given coordinates
             if (spirit.MapPos == coords)

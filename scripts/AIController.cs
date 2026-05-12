@@ -96,11 +96,8 @@ public partial class AIController : Node
             // Damage the Land
             this.GameManager.DamageLand();
         }
-
-        // DEBUG: Print the current Turn State before ending the turn
-        GD.Print("Ending Turn '" + this.GameManager.TurnStateOrder.Peek() + "'.");
-
-        // End the Current Turn and Move to the Next Turn State
-        this.GameManager.TurnStateOrder.Enqueue(this.GameManager.TurnStateOrder.Dequeue());
+        
+        // End Turn and Go to Next Turn
+        this.GameManager.NextTurn();
     }
 }
